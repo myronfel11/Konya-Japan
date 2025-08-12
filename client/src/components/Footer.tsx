@@ -91,29 +91,32 @@ export default function Footer() {
         {/* Follow Us */}
         <div>
           <h3 className="font-semibold mb-3">Follow Us</h3>
+
           <ul className="space-y-3">
             {[
-              { name: "Facebook", href: "#", letter: "F" },
-              { name: "Instagram", href: "#", letter: "I" },
-              { name: "TikTok", href: "#", letter: "T" },
+              { name: "Facebook", href: "#", icon: "/icons/facebook.svg" },
+              { name: "Instagram", href: "#", icon: "/icons/instagram.svg" },
+              { name: "TikTok", href: "#", icon: "/icons/tiktok.svg" },
             ].map((s) => (
               <li key={s.name}>
                 <a
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-disabled="true"
-                  className="group pointer-events-none flex items-center gap-3 text-[15px]"
+                  // remove pointer-events-none to make them clickable now
+                  className="group flex items-center gap-3 text-[15px]"
                 >
-                  <span
-                    aria-hidden
-                    className="flex h-7 w-7 items-center justify-center rounded-full border border-neutral-400
-                               text-sm font-semibold transition group-hover:bg-[color:var(--brand-red)]
-                               group-hover:text-white"
-                  >
-                    {s.letter}
+                  {/* circular holder with your favicon inside */}
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full border border-neutral-400 overflow-hidden bg-white transition group-hover:border-[color:var(--brand-red)]">
+                    <img
+                      src={s.icon}
+                      alt=""
+                      aria-hidden
+                      className="h-5 w-5 object-contain transition group-hover:scale-[1.05]"
+                      loading="lazy"
+                    />
                   </span>
-                  <span className="hover:underline">{s.name}</span>
+                  <span className="group-hover:underline">{s.name}</span>
                 </a>
               </li>
             ))}
