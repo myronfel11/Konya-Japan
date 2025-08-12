@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Nolan Hill",
+    "address": "8 Nolan Hill Blvd NW, Calgary, AB T3R 0J4, Canada",
+    "telHref": "+15873538868",
+    "photo": "/images/location/nolan.jpg",
+    "maps": {
+      "google": "https://www.google.com/maps/search/?api=1&query=8%20Nolan%20Hill%20Blvd%20NW%2C%20Calgary%2C%20AB%20T3R%200J4%2C%20Canada",
+      "apple": "https://maps.apple.com/?q=8%20Nolan%20Hill%20Blvd%20NW%2C%20Calgary%2C%20AB%20T3R%200J4%2C%20Canada"
+    }
+  },
+  {
+    "name": "16 Ave NW",
+    "address": "602D 16 Ave NW, Calgary, AB",
+    "telHref": "+15873538868",
+    "photo": "/images/location/16ave.jpg",
+    "maps": {
+      "google": "https://www.google.com/maps/search/?api=1&query=602D%2016%20Ave%20NW%2C%20Calgary%2C%20AB",
+      "apple": "https://maps.apple.com/?q=602D%2016%20Ave%20NW%2C%20Calgary%2C%20AB"
+    }
+  }
+]
