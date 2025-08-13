@@ -10,7 +10,7 @@ function slugify(name: string) {
 
 export default function Menu() {
   return (
-    <section className="max-w-4xl mx-auto px-4 py-10">
+    <section className="max-w-6xl mx-auto px-4 py-10">
       <h1 className="text-3xl font-semibold mb-6">Menu</h1>
 
       <div className="space-y-10">
@@ -18,7 +18,6 @@ export default function Menu() {
           const id = slugify(c);
           return (
             <section key={id} id={id} className="scroll-mt-24">
-              {/* keep or hide this heading; if you want it hidden too, add 'sr-only' */}
               <h2 className="text-xl font-semibold mb-3">{c}</h2>
 
               {/* image-only section */}

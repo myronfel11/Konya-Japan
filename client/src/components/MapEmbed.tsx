@@ -1,4 +1,3 @@
-// src/components/MapEmbed.tsx
 type Props = { address: string; heightClass?: string };
 
 export default function MapEmbed({

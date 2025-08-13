@@ -103,7 +103,6 @@ export default function Footer() {
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  // remove pointer-events-none to make them clickable now
                   className="group flex items-center gap-3 text-[15px]"
                 >
                   {/* circular holder with your favicon inside */}
@@ -123,7 +122,6 @@ export default function Footer() {
           </ul>
         </div>
       </div>
-      {/* <-- missing close fixed here */}
 
       {/* copyright */}
       <div className="text-center text-sm text-neutral-500 py-4 border-t border-neutral-200">

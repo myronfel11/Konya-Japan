@@ -58,7 +58,6 @@ export default function ReviewCard({ rating, text }: Props) {
         ))}
       </div>
 
-      {/* Taller by default; collapsed shows ~6 lines (leading-6 x 6 = 9rem) */}
       <div className="mt-3 relative min-h-[190px] pb-9">
         <p
           ref={contentRef}

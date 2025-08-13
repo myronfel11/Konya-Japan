@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <section className="max-w-6xl mx-auto px-4 py-10">
+      <section className="max-w-6xl mx-auto px-4 pt-16 min-[1050px]:pt-0 pb-10">
         <div className="mb-10">
           <h2 className="text-2xl font-semibold mb-2">
             Welcome to Kon’ya Japan

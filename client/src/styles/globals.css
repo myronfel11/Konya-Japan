@@ -34,3 +34,7 @@ body {
     transform: translateX(-50%);
   }
 }
+
+@theme {
+  --breakpoint-nav: 1050px;
+}
