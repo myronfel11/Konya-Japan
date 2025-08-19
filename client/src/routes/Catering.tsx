@@ -56,7 +56,7 @@ const CATERING_TYPES = [
 ];
 
 function emailLink(subject: string, body: string) {
-  return `mailto:konyajapan@example.com?subject=${encodeURIComponent(
+  return `mailto:konya.yyc@gmail.com?subject=${encodeURIComponent(
     subject
   )}&body=${encodeURIComponent(body)}`;
 }
@@ -301,7 +301,7 @@ export default function Catering() {
                 Call Us
               </a>
               <a
-                href="mailto:konyajapan@example.com"
+                href="mailto:konya.yyc@gmail.com"
                 className="rounded-md px-4 py-2 border hover:bg-neutral-50"
               >
                 Email Directly

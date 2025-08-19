@@ -44,9 +44,9 @@ export default function Footer() {
           <h3 className="font-semibold mb-3">Have Any Questions?</h3>
           <a
             className="text-[color:var(--brand-red)] hover:underline"
-            href="mailto:konyajapan@example.com"
+            href="mailto:konya.yyc@gmail.com"
           >
-            konyajapan@example.com
+            konya.yyc@gmail.com
           </a>
           <h3 className="font-semibold mt-6 mb-3">Call Us</h3>
           <a
@@ -122,7 +122,18 @@ export default function Footer() {
           </ul>
         </div>
       </div>
-
+      {/* attribution */}
+      <div className="text-center text-xs text-neutral-500 py-2">
+        Icons by{" "}
+        <a
+          href="https://www.vecteezy.com/vector-art/8486250-black-and-white-social-media-icons"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline"
+        >
+          black-and-white-social-media-icons Vectors by Vecteezy
+        </a>
+      </div>
       {/* copyright */}
       <div className="text-center text-sm text-neutral-500 py-4 border-t border-neutral-200">
         © {new Date().getFullYear()} Kon’ya Japan
