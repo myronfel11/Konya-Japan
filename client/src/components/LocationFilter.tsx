@@ -49,7 +49,7 @@ export default function LocationFilter() {
               Apple Maps
             </a>
             <a
-              className="px-3 py-2 border rounded hover:bg-neutral-100"
+              className="px-3 py-2 border rounded bg-[color:var(--brand-red)] text-white hover:opacity-90"
               href={`tel:${loc.telHref}`}
             >
               Call

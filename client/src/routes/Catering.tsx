@@ -56,74 +56,87 @@ const CATERING_TYPES = [
 ];
 
 function emailLink(subject: string, body: string) {
-  return `mailto:konya.yyc@gmail.com?subject=${encodeURIComponent(
+  return `mailto:konyajapan@example.com?subject=${encodeURIComponent(
     subject
   )}&body=${encodeURIComponent(body)}`;
 }
 
+type QuoteFormState = {
+  name: string;
+  email: string;
+  phone: string;
+  datetime: string; // ISO from datetime-local or free text
+  headcount: string;
+  dietary: string;
+  pickupOrDelivery: "Pickup" | "Delivery" | "";
+  location: "Nolan Hill" | "16 Ave NW" | "Offsite" | "";
+  packageId: string;
+  description: string; // optional extra details
+};
+
+function buildQuoteEmail(form: QuoteFormState) {
+  const pkg = form.packageId
+    ? PACKAGES.find((p) => p.id === form.packageId)?.name
+    : undefined;
+
+  const lines = [
+    "Hello Kon’ya Japan,",
+    "",
+    "I'd like a catering quote.",
+    "",
+    `Name: ${form.name}`,
+    `Email: ${form.email}`,
+    `Phone: ${form.phone || "-"}`,
+    `Date/Time: ${form.datetime}`,
+    `Headcount: ${form.headcount}`,
+    `Dietary notes: ${form.dietary}`,
+    `Pickup/Delivery: ${form.pickupOrDelivery}`,
+    `Location: ${form.location || "-"}`,
+    `Package: ${pkg ?? "-"}`,
+    "",
+    "Description:",
+    form.description || "-",
+    "",
+    "Thank you!",
+  ];
+  return lines.join("\n");
+}
+
 export default function Catering() {
-  const quoteHref = emailLink(
-    "Catering Inquiry — Kon’ya Japan",
-    [
-      "Hello Kon’ya Japan,",
-      "",
-      "I'd like a catering quote. Details:",
-      "- Date & time:",
-      "- Number of people:",
-      "- Location (Nolan Hill / 16 Ave or offsite):",
-      "- Package or items of interest:",
-      "- Any dietary notes:",
-      "",
-      "Thank you!",
-    ].join("\n")
+  const [form, setForm] = useState<QuoteFormState>({
+    name: "",
+    email: "",
+    phone: "",
+    datetime: "",
+    headcount: "",
+    dietary: "",
+    pickupOrDelivery: "",
+    location: "",
+    packageId: "",
+    description: "",
+  });
+
+  const quoteHref = useMemo(
+    () => emailLink("Catering Inquiry — Kon’ya Japan", buildQuoteEmail(form)),
+    [form]
   );
-
-  // --- Form state ---
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [desc, setDesc] = useState("");
-
-  const isEmailValid = useMemo(
-    () => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email),
-    [email]
-  );
-  const canSubmit =
-    name.trim().length > 1 && isEmailValid && desc.trim().length > 5;
-
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const subject = `Catering Request — ${name}`;
-    const body = [
-      `Name: ${name}`,
-      `Email: ${email}`,
-      "",
-      "Request details:",
-      desc,
-      "",
-      "— sent from konyajapan.ca catering page",
-    ].join("\n");
-    const href = emailLink(subject, body);
-    window.location.href = href; // opens user's email client
-  };
 
   return (
     <section className="max-w-6xl mx-auto px-4 py-10">
       <h1 className="text-3xl font-semibold mb-6">Catering</h1>
 
-      {/* Top row: Info + Photo */}
+      {/* Top: Info + (image removed to reduce height) */}
       <div className="grid lg:grid-cols-2 gap-6">
         <Card>
           <div className="space-y-4">
             <h2 className="text-xl font-semibold">What We Cater</h2>
-
             <p className="text-neutral-700">
               From family gatherings to office lunches and celebrations, we
               prepare fresh, crowd-pleasing Japanese dishes with reliable timing
               and easy setup.
             </p>
 
-            {/* On-brand chip list */}
-            <ul className="flex flex-wrap gap-2.5 sm:gap-3">
+            <ul className="flex flex-wrap gap-2.5">
               {CATERING_TYPES.map((t) => (
                 <li key={t}>
                   <div className="inline-flex items-start gap-2 rounded-full border border-neutral-200 bg-white px-3 py-1.5">
@@ -135,7 +148,8 @@ export default function Catering() {
                 </li>
               ))}
             </ul>
-            {/* Always-show CTAs */}
+
+            {/* Always show both buttons */}
             <div className="flex flex-wrap gap-3 pt-1">
               <a
                 href={quoteHref}
@@ -151,27 +165,22 @@ export default function Catering() {
               </a>
             </div>
 
-            {/* Photo inside this card */}
-            <div className="rounded-xl overflow-hidden border mt-3">
-              <img
-                src="/images/menu/placeholder.jpg"
-                alt="Catering sample platter"
-                className="w-full h-56 object-cover"
-              />
+            {/* REMOVED small platter image to shrink this section */}
+            {/* (the following block was deleted)
+            <div className="rounded-xl overflow-hidden border mt-2">
+              <img ... />
             </div>
-
-            <p className="text-xs text-neutral-500">
-              * Pricing shown is sample only. Final quote depends on selection
-              and headcount.
-            </p>
+            */}
           </div>
         </Card>
 
+        {/* Keep the right-side image card (optional). Remove this Card too if you want it even shorter. */}
         <Card className="flex items-center justify-center">
           <img
             src="/images/location/nolan.jpg"
             alt="Restaurant interior"
             className="w-full h-72 object-cover rounded-xl"
+            loading="lazy"
           />
         </Card>
       </div>
@@ -181,7 +190,7 @@ export default function Catering() {
         <h2 className="text-2xl font-semibold mb-4">Popular Packages</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {PACKAGES.map((p) => (
-            <Card key={p.id}>
+            <Card key={p.id} className="flex flex-col">
               <div className="flex items-start justify-between">
                 <div>
                   <h3 className="font-semibold">{p.name}</h3>
@@ -205,7 +214,7 @@ export default function Catering() {
                   Get Quote
                 </a>
                 <a
-                  href="/menu#special-rolls"
+                  href={`/menu#${p.id}`}
                   className="px-3 py-1.5 rounded bg-[color:var(--brand-red)] text-white hover:opacity-90 text-sm"
                 >
                   View Menu
@@ -216,102 +225,229 @@ export default function Catering() {
         </div>
       </div>
 
-      {/* Custom Request Form */}
+      {/* Request Form */}
       <div className="mt-10">
+        <h2 className="text-2xl font-semibold mb-4">Request a Quote</h2>
         <Card>
-          <form onSubmit={onSubmit} className="space-y-4">
-            <h2 className="text-xl font-semibold">Request a Custom Catering</h2>
-
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div>
-                <label
-                  className="block text-sm font-medium mb-1"
-                  htmlFor="name"
-                >
-                  Your Name
-                </label>
-                <input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                  className="w-full rounded-md border px-3 py-2 outline-none focus:ring-2 focus:ring-[color:var(--brand-red)]"
-                  placeholder="Jane Doe"
-                />
-              </div>
-
-              <div>
-                <label
-                  className="block text-sm font-medium mb-1"
-                  htmlFor="email"
-                >
-                  Your Email
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full rounded-md border px-3 py-2 outline-none focus:ring-2 focus:ring-[color:var(--brand-red)]"
-                  placeholder="jane@example.com"
-                />
-                {!isEmailValid && email.length > 0 && (
-                  <p className="mt-1 text-xs text-[color:var(--brand-red)]">
-                    Please enter a valid email.
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1" htmlFor="desc">
-                What would you like? (details)
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              window.location.href = quoteHref;
+            }}
+            className="grid gap-4 sm:grid-cols-2"
+          >
+            {/* required fields */}
+            <div className="sm:col-span-1">
+              <label className="block text-sm mb-1">
+                Name{" "}
+                <span className="text-[color:var(--brand-red)]">
+                  (required)
+                </span>
               </label>
-              <textarea
-                id="desc"
-                value={desc}
-                onChange={(e) => setDesc(e.target.value)}
+              <input
+                type="text"
                 required
-                rows={6}
-                className="w-full rounded-md border px-3 py-2 outline-none focus:ring-2 focus:ring-[color:var(--brand-red)]"
-                placeholder="Date/time, headcount, packages or items, dietary notes, pickup/delivery, etc."
+                value={form.name}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, name: e.target.value }))
+                }
+                className="w-full rounded-md border px-3 py-2"
+                placeholder="Your full name"
               />
             </div>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="sm:col-span-1">
+              <label className="block text-sm mb-1">
+                Email{" "}
+                <span className="text-[color:var(--brand-red)]">
+                  (required)
+                </span>
+              </label>
+              <input
+                type="email"
+                required
+                value={form.email}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, email: e.target.value }))
+                }
+                className="w-full rounded-md border px-3 py-2"
+                placeholder="you@example.com"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm mb-1">
+                Date/Time{" "}
+                <span className="text-[color:var(--brand-red)]">
+                  (required)
+                </span>
+              </label>
+              <input
+                type="datetime-local" /* change to text if you prefer */
+                required
+                value={form.datetime}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, datetime: e.target.value }))
+                }
+                className="w-full rounded-md border px-3 py-2"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm mb-1">
+                Headcount{" "}
+                <span className="text-[color:var(--brand-red)]">
+                  (required)
+                </span>
+              </label>
+              <input
+                type="number"
+                min={1}
+                required
+                inputMode="numeric"
+                value={form.headcount}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, headcount: e.target.value }))
+                }
+                className="w-full rounded-md border px-3 py-2"
+                placeholder="e.g., 25"
+              />
+            </div>
+
+            <div className="sm:col-span-2">
+              <label className="block text-sm mb-1">
+                Dietary Notes{" "}
+                <span className="text-[color:var(--brand-red)]">
+                  (required)
+                </span>
+              </label>
+              <textarea
+                required
+                rows={3}
+                value={form.dietary}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, dietary: e.target.value }))
+                }
+                className="w-full rounded-md border px-3 py-2"
+                placeholder="Allergies, vegetarian/vegan, no shellfish, etc."
+              />
+            </div>
+
+            <div className="sm:col-span-2">
+              <label className="block text-sm mb-1">
+                Pickup/Delivery{" "}
+                <span className="text-[color:var(--brand-red)]">
+                  (required)
+                </span>
+              </label>
+              <div className="flex items-center gap-6">
+                <label className="inline-flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="pod"
+                    required
+                    checked={form.pickupOrDelivery === "Pickup"}
+                    onChange={() =>
+                      setForm((f) => ({ ...f, pickupOrDelivery: "Pickup" }))
+                    }
+                  />
+                  <span>Pickup</span>
+                </label>
+                <label className="inline-flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="pod"
+                    required
+                    checked={form.pickupOrDelivery === "Delivery"}
+                    onChange={() =>
+                      setForm((f) => ({ ...f, pickupOrDelivery: "Delivery" }))
+                    }
+                  />
+                  <span>Delivery</span>
+                </label>
+              </div>
+            </div>
+
+            {/* optional fields below the required ones */}
+            <div>
+              <label className="block text-sm mb-1">Phone</label>
+              <input
+                type="tel"
+                value={form.phone}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, phone: e.target.value }))
+                }
+                className="w-full rounded-md border px-3 py-2"
+                placeholder="(587) 000-0000"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm mb-1">Location</label>
+              <select
+                value={form.location}
+                onChange={(e) =>
+                  setForm((f) => ({
+                    ...f,
+                    location: e.target.value as QuoteFormState["location"],
+                  }))
+                }
+                className="w-full rounded-md border px-3 py-2"
+              >
+                <option value="">Select…</option>
+                <option value="Nolan Hill">Nolan Hill</option>
+                <option value="16 Ave NW">16 Ave NW</option>
+                <option value="Offsite">Offsite</option>
+              </select>
+            </div>
+
+            <div className="sm:col-span-2">
+              <label className="block text-sm mb-1">Package (optional)</label>
+              <select
+                value={form.packageId}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, packageId: e.target.value }))
+                }
+                className="w-full rounded-md border px-3 py-2"
+              >
+                <option value="">No preference</option>
+                {PACKAGES.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name} — {p.price}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="sm:col-span-2">
+              <label className="block text-sm mb-1">
+                Description (optional)
+              </label>
+              <textarea
+                rows={4}
+                value={form.description}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, description: e.target.value }))
+                }
+                className="w-full rounded-md border px-3 py-2"
+                placeholder="Event details, timing, delivery instructions, etc."
+              />
+            </div>
+
+            <div className="sm:col-span-2 flex gap-3">
               <button
                 type="submit"
-                disabled={!canSubmit}
-                className={`rounded-md px-4 py-2 text-white transition ${
-                  canSubmit
-                    ? "bg-[color:var(--brand-red)] hover:opacity-90"
-                    : "bg-neutral-400 cursor-not-allowed"
-                }`}
+                className="inline-flex items-center justify-center rounded-md px-4 py-2 bg-[color:var(--brand-red)] text-white hover:opacity-90"
               >
                 Send Email
               </button>
-
-              {/* Always-visible alternative actions */}
               <a
                 href="tel:+15873538868"
-                className="rounded-md px-4 py-2 border hover:bg-neutral-50"
+                className="inline-flex items-center justify-center rounded-md px-4 py-2 border hover:bg-neutral-50"
               >
-                Call Us
-              </a>
-              <a
-                href="mailto:konya.yyc@gmail.com"
-                className="rounded-md px-4 py-2 border hover:bg-neutral-50"
-              >
-                Email Directly
+                Call Us (587) 353-8868
               </a>
             </div>
-
-            <p className="text-xs text-neutral-500">
-              Submitting opens your email app with the message pre-filled. No
-              account required.
-            </p>
           </form>
         </Card>
       </div>
